@@ -46,4 +46,29 @@ class TraductionWordOut(BaseModel):
     traduction:str
     class Config:
         orm_mode = True
+        
+class TraductionnaryIn(BaseModel):
+    name: str
+    lines: List[LineBase]
+    class Config:
+        orm_mode = True
+        
+class TraductionaryOut(BaseModel):
+    name: str
+    lines: List[LineBase]
+    class Config:
+        orm_mode = True
+        
+class LineUpdate(BaseModel):
+    id: int
+    key: str
+    value: str
+
+class TraductionaryUpdate(BaseModel):
+    dictionnary_id: int
+    name: str 
+    lines: List[LineUpdate]
+        
+
+    
     
