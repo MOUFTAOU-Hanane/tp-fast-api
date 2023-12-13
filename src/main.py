@@ -82,6 +82,12 @@ def read_dictionnary(db: Session = Depends(get_db)):
     dictionaries = repository.get_dictionaries(db)
     return dictionaries
 
+@app.get("/delete/{dictionnary_id}")
+def delete_dictionnary(dictionnary_id: int, db: Session = Depends(get_db)):
+    dictionaries = repository.delete_dictionary(db, dictionnary_id)
+    return dictionaries
+
+
 
 
 @app.post("/traduction_word/")

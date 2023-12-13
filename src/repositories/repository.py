@@ -233,11 +233,33 @@ def update_traduction(db: Session, traduction_update: TraductionaryUpdate):
 
     return {"error": "Dictionnaire non trouvé"}
 
+def delete_dictionary(db: Session, dictionary_id: int) -> bool:
+    try:
+        dictionary = db.query(Dictionnary).filter(Dictionnary.id == dictionary_id).first()
+
+        if not dictionary:
+            return False  
+
+        db.query(Traduction).filter(Traduction.dictionnary_id == dictionary_id).delete()
+
+        db.delete(dictionary)
+        db.commit()
+
+        return {
+            "success" :True,
+            "message":"Le dictionnnaire a bien été supprimé"
+        }  
+
+    except Exception as e:
+        print(f"Error deleting dictionary: {str(e)}")
+        db.rollback()
+        return False
 
 def traduction_word(db: Session, traduction):
     try:
         array_trad = []
         word = traduction.word.upper()
+        dictionnary_name = db.query(Dictionnary).filter(Dictionnary.id ==  traduction.dictionnary_id).first()
         for item in word:
             translation = db.query(Traduction).filter(Traduction.key == item, Traduction.dictionnary_id == traduction.dictionnary_id).first()
             if translation:
@@ -246,7 +268,11 @@ def traduction_word(db: Session, traduction):
                 array_trad.append("?")
 
         result = ''.join(array_trad)
-        return result
+        return{
+            "dictionnary_name":dictionnary_name.name,
+            "word":traduction.word,
+            "traduction": result
+            } 
     except Exception as e:
         print(f"Une erreur est survenue : {e}")
         raise
