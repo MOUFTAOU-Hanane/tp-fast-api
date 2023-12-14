@@ -260,6 +260,10 @@ def traduction_word(db: Session, traduction):
         array_trad = []
         word = traduction.word.upper()
         dictionnary_name = db.query(Dictionnary).filter(Dictionnary.id ==  traduction.dictionnary_id).first()
+        if not dictionnary_name:
+            return{
+                "error":f"Le dictionnaire avec l'ID {traduction.dictionnary_id} n'a pas été trouvé."
+            }
         for item in word:
             translation = db.query(Traduction).filter(Traduction.key == item, Traduction.dictionnary_id == traduction.dictionnary_id).first()
             if translation:
